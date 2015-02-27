@@ -1,0 +1,29 @@
+{
+  "name": "y-currency",
+  "version": "1.0.0",
+  "description": "A module that enables fast and easy currency/ies conversion using the Yahoo Finance API.",
+  "author": {
+    "name": "Matas Kairaitis",
+    "email": "matas.kairaitis@gmail.com",
+    "url": "https://github.com/matys18/"
+  },
+  "main": "main.js",
+  "repository": {
+  "type": "git",
+  "url": "https://github.com/matys18/y-currency"
+},
+  "bugs": {
+  "url": "https://github.com/matys18/y-currency/issues"
+},
+  "keywords": [
+  "currency",
+  "conversion",
+  "converter",
+  "convert",
+  "yahoo",
+  "finance",
+  "forex"
+],
+  "analyze": false,
+  "license": "MIT"
+}
