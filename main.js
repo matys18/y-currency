@@ -6,14 +6,16 @@ module.exports = {
 		if (pairs.length == 0) {
 			return callback('No currency symbols provided',null);
 		}
+		var query = '';
 		if (typeof pairs === 'string'){
-			var query = pairs;
+			query = pairs;
 		} else if (Object.prototype.toString.call(pairs) === '[object Array]') {
+			var arrLen = pairs.length - 1;
 			pairs.forEach(function(value,key){
-				if (key == 0) {
+				if (key == arrLen) {
 					query += value;
 				} else {
-					var adjusted = '%2C' + value;
+					var adjusted = value + '%2C';
 					query += adjusted;
 				}
 			});
@@ -49,11 +51,13 @@ module.exports = {
  			res.on('data', function(stuff){
  				var parsed = JSON.parse(stuff);
  				if (typeof amount === 'number'){
- 					callback(null, parsed.query.results.rate.Rate * amount);
+ 					var results = parsed.query.results.rate.Rate * amount;
+ 					callback(null, results.toFixed(2));
  				} else if (Object.prototype.toString.call(amount) === '[object Array]') {
  					var results = [];
  					amount.forEach(function(value,key){
- 						results.push(amount[key] * parsed.query.results.rate.Rate);
+ 						var value = amount[key] * parsed.query.results.rate.Rate;
+ 						results.push(value.toFixed(2));
  					});
  					callback(null,results);
  				} else {
