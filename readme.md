@@ -1,7 +1,7 @@
 **Y-currency**
 --------------
 
-Easy currency conversion and currency information retrieval using the Yahoo Finance API where the rates are updated every few minutes. A full list of valid currency symbols is available in the bottom of the page. 
+Easy currency conversion and currency information retrieval using the Yahoo Finance API where the rates are updated every few minutes. 
 
 
 **Installation:**
@@ -14,7 +14,7 @@ Easy currency conversion and currency information retrieval using the Yahoo Fina
 **Usage:**
 ---------
 
-To convert currencies use the convert() function.
+To convert currencies use the `convert(amount,from,to,callback)` function.
 
 **Example:**
 
@@ -47,7 +47,10 @@ It is also possible to convert multiple values at once by entering an array:
 Outputs an array of converted floats: *`[8.93, 17.87, 26.80, 35.74, 44.67]`*
 
 
-You can also get information about currency pairs by using getCurrency()
+----------
+
+
+You can also get information about currency pairs by using `getCurrency(pair,callback)`
 
 **Example:**
 
@@ -110,3 +113,4 @@ Outputs an array of objects:
             Time: '12:07pm',
             Ask: '0.2592',
             Bid: '0.2581' } ]
+
