@@ -3,22 +3,13 @@ var http = require('http');
 module.exports = {
 
 	getCurrency: function(pairs,callback){
-		if (pairs.length == 0) {
-			return callback('No currency symbols provided',null);
+		if (typeof pairs === 'string'  && pairs.length < 6 || Object.prototype.toString.call(pairs) === '[object Array]' && !pairs.length) {
+			return callback(new Error('Invalid pair format provided! .getCurrency() only accepts strings and arrays of strings!'), null);
 		}
-		var query = '';
 		if (typeof pairs === 'string'){
-			query = pairs;
+			var query = pairs;
 		} else if (Object.prototype.toString.call(pairs) === '[object Array]') {
-			var arrLen = pairs.length - 1;
-			pairs.forEach(function(value,key){
-				if (key == arrLen) {
-					query += value;
-				} else {
-					var adjusted = value + '%2C';
-					query += adjusted;
-				}
-			});
+			var query = pairs.join('%2C');
 		}
 		var options = {
 			host: 'query.yahooapis.com',
@@ -29,16 +20,16 @@ module.exports = {
 			res.setEncoding('utf-8');
  			res.on('data', function(stuff){
  				var parsed = JSON.parse(stuff);
- 				callback(null, parsed.query.results.rate);
+ 				return callback(null, parsed.query.results.rate);
 			});
 		}).on('error', function(e){
-		  console.log('Y-currency request error:' + e.message);
+			return callback(new Error('Y-currency request error:' + e.message), null);
 		});
 	},
 
 	convert: function(amount, from, to, callback){
-		if (amount.length == 0 || from.length == 0 || to.length == 0) {
-			return callback(errorText,'Faulty information provided!');
+		if (amount.length === 0 || from.length < 3 || to.length < 3) {
+			return callback(new Error('Faulty information provided! Make sure you are using the corect syntax! Amount = int, from = string, to = string'), null);
 		}
 		var query = from + to;
 		var options = {
@@ -52,20 +43,20 @@ module.exports = {
  				var parsed = JSON.parse(stuff);
  				if (typeof amount === 'number'){
  					var results = parsed.query.results.rate.Rate * amount;
- 					callback(null, results.toFixed(2));
+ 					return callback(null, results.toFixed(2));
  				} else if (Object.prototype.toString.call(amount) === '[object Array]') {
  					var results = [];
  					amount.forEach(function(value,key){
  						var value = amount[key] * parsed.query.results.rate.Rate;
  						results.push(value.toFixed(2));
  					});
- 					callback(null,results);
+ 					return callback(null,results);
  				} else {
- 					callback('Invalid currency format provided! Make sure to use a string or an array!', null);
+ 					return callback(new Error('Invalid currency format provided! Make sure to use a string or an array!'), null);
  				}
 			});
 		}).on('error', function(e){
-		  console.log('Y-currency request error:' + e.message);
+		  return callback(new Error('Y-currency request error:' + e.message), null);
 		});
 	}
 
