@@ -1,116 +1,132 @@
-**Y-currency**
---------------
-
-Easy currency conversion and currency information retrieval using the Yahoo Finance API where the rates are updated every few minutes. 
-
-
-**Installation:**
------------------
+## Instalation
 
     npm install y-currency
-    
-    
 
-**Usage:**
----------
+<a name="module_y-currency"></a>
+## y-currency
+Easy currency conversion using the yahoo api.
 
-To convert currencies use the `convert(amount,from,to,callback)` function.
+**Version**: 1.0.2  
+**Author:** Matas Kairaitis  
+**License**: MIT  
 
-**Example:**
+* [y-currency](#module_y-currency)
+    * _static_
+        * [.convert(values, from, to, cb)](#module_y-currency.convert)
+        * [.getCurrency(symbols, cb)](#module_y-currency.getCurrency)
+    * _inner_
+        * [~convertCallback](#module_y-currency..convertCallback) : <code>function</code>
+        * [~getCurrencyCallback](#module_y-currency..getCurrencyCallback) : <code>function</code>
 
-    var currency = require('y-currency');
-    
-    currency.convert(10, 'USD', 'EUR', function(err,converted){
-        
-        if (err){
-            console.log(err);
-        }
-    
-        console.log(converted);
-    });
+<a name="module_y-currency.convert"></a>
+### y-currency.convert(values, from, to, cb)
+Converts the provided values to another currency in one request.
 
-Outputs the converted currency as a float: *`8.81`*
+**Kind**: static method of <code>[y-currency](#module_y-currency)</code>  
+**Summary**: When converting multiple values you should always pass them as an array instead of
+calling this function multiple times. This way you minimize the amount of requests that are made.  
 
-It is also possible to convert multiple values at once by entering an array:
+| Param | Type | Description |
+| --- | --- | --- |
+| values | <code>number</code> &#124; <code>Array.&lt;number&gt;</code> | A string or array of strings of the amounts to convert. |
+| from | <code>string</code> | The currency symbol to convert from. Will return an error if the symbol is not supported. |
+| to | <code>string</code> | The currency symbol to convert to. ill return an error if the symbol is not supported. |
+| cb | <code>convertCallback</code> | The calback that will be executed when the request is processed. |
 
-    var currency = require('y-currency');
-    
-    currency.convert([10, 81, 99, 20, 67, 19], 'USD', 'EUR', function(err,converted){
-        
-        if (err){
-            console.log(err);
-        }
-    
-        console.log(converted);
-    });
+**Example**  
+```js
+currency.convert(10, 'USD', 'EUR', function(err, converted) {
+   if (err) // Handle error
 
-Outputs an array of converted floats: *`[8.93, 17.87, 26.80, 35.74, 44.67]`*
+   console.log(converted); // Outputs ~8.91 (the converted value)
+});
+```
+**Example**  
+```js
+currency.convert([10, 20, 40], 'USD', 'EUR', function(err, converted) {
+   if (err) // Handle error
 
+   console.log(converted); // Outputs [9.11, 18.22, 27.33] (the converted values in an array)
+});
+```
+<a name="module_y-currency.getCurrency"></a>
+### y-currency.getCurrency(symbols, cb)
+Gets currency information as an object or array of objects in one request.
 
-----------
+**Kind**: static method of <code>[y-currency](#module_y-currency)</code>  
 
+| Param | Type | Description |
+| --- | --- | --- |
+| symbols | <code>string</code> &#124; <code>Array.&lt;string&gt;</code> | A string or array of strings of the pairs to get information on. |
+| cb | <code>getCurrencyCallback</code> | The calback that will be executed when the request is processed. |
 
-You can also get information about currency pairs by using `getCurrency(pair,callback)`
+**Example**  
+```js
+currency.getCurrency('USDEUR', function(err, result) {
+   if (err) // Handle error
 
-**Example:**
+   console.log(result); // Outputs an object with currency information
+   
+   // Output
+   { id: 'USDEUR',
+     Name: 'USD to EUR',
+     Rate: '0.891',
+     Date: '2/27/2015',
+     Time: '10:56am',
+     Ask: '0.891',
+     Bid: '0.8909' }
+});
+```
+**Example**  
+```js
+currency.getCurrency(['USDEUR', 'NZDCAD', 'THBSEK'], function(err, result) {
+   if (err) // Handle error
 
-    var currency = require('y-currency');
-    
-    currency.getCurrency('USDEUR',function(err,response){
-    
-        if (err){
-            console.log(err);
-        }
-    
-        console.log(response);
-    
-    });
-
-Outputs an object: 
-
-     { id: 'USDEUR',
+   console.log(result); // Outputs an object array with currency information
+   
+   // Output
+   [ { id: 'USDEUR',
       Name: 'USD to EUR',
-      Rate: '0.891',
+      Rate: '0.8935',
       Date: '2/27/2015',
-      Time: '10:56am',
-      Ask: '0.891',
-      Bid: '0.8909' }
+      Time: '12:07pm',
+      Ask: '0.8935',
+      Bid: '0.8935' },
+    { id: 'NZDCAD',
+      Name: 'NZD to CAD',
+      Rate: '0.9452',
+      Date: '2/27/2015',
+      Time: '12:07pm',
+      Ask: '0.9455',
+      Bid: '0.9449' },
+    { id: 'THBSEK',
+      Name: 'THB to SEK',
+      Rate: '0.2587',
+      Date: '2/27/2015',
+      Time: '12:07pm',
+      Ask: '0.2592',
+      Bid: '0.2581' } ]
+});
+```
+<a name="module_y-currency..convertCallback"></a>
+### y-currency~convertCallback : <code>function</code>
+Callback that handles the response by convert().
 
-You can also get multiple currency pairs by entering an array of pairs as so: 
+**Kind**: inner typedef of <code>[y-currency](#module_y-currency)</code>  
 
-    var currency = require('y-currency');
-    
-    currency.getCurrency(['USDEUR','NZDCAD','SEKTHB'],function(err,response){
-    
-        if (err){
-            console.log(err);
-        }
-    
-        console.log(response);
-    
-    });
+| Param | Type | Description |
+| --- | --- | --- |
+| err | <code>error</code> &#124; <code>null</code> | If an error occurs during the execution of the function it is passed here, otherwise null. |
+| values | <code>number</code> &#124; <code>Array.&lt;number&gt;</code> &#124; <code>null</code> | If no errors occured this contains the converted value/values, otherwise null. |
 
-Outputs an array of objects:
+<a name="module_y-currency..getCurrencyCallback"></a>
+### y-currency~getCurrencyCallback : <code>function</code>
+Callback that handles the response by getCurrency().
 
-    [ { id: 'USDEUR',
-            Name: 'USD to EUR',
-            Rate: '0.8935',
-            Date: '2/27/2015',
-            Time: '12:07pm',
-            Ask: '0.8935',
-            Bid: '0.8935' },
-          { id: 'NZDCAD',
-            Name: 'NZD to CAD',
-            Rate: '0.9452',
-            Date: '2/27/2015',
-            Time: '12:07pm',
-            Ask: '0.9455',
-            Bid: '0.9449' },
-          { id: 'THBSEK',
-            Name: 'THB to SEK',
-            Rate: '0.2587',
-            Date: '2/27/2015',
-            Time: '12:07pm',
-            Ask: '0.2592',
-            Bid: '0.2581' } ]
+**Kind**: inner typedef of <code>[y-currency](#module_y-currency)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| err | <code>error</code> &#124; <code>null</code> | If an error occurs during the execution of the function it is passed here, otherwise null. |
+| values | <code>Object</code> &#124; <code>Array.&lt;Object&gt;</code> &#124; <code>null</code> | If no errors occured this contains the object or object array containing the currency information, otherwise null. |
 
