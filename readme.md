@@ -1,4 +1,4 @@
-## Instalation
+## Installation
 
     npm install y-currency
 
