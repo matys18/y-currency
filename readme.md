@@ -6,7 +6,7 @@
 ## y-currency
 Easy currency conversion using the yahoo api.
 
-**Version**: 1.0.2  
+**Version**: 1.0.3  
 **Author:** Matas Kairaitis  
 **License**: MIT  
 
