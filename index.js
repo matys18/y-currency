@@ -42,7 +42,7 @@ var exports = module.exports = {};
 var convert = exports.convert = function(values, from, to, cb) {
 
 	// Check the parameter types.
-	if (!(Array.isArray(values) || typeof values === 'string' || typeof to !== 'string' || typeof from === 'string')) {
+	if (!(Array.isArray(values) || typeof values === 'number') || typeof to !== 'string' || typeof from !== 'string') {
 		return cb(new TypeError('Invalid parameter types supplied.'), null);
 	}
 
@@ -51,15 +51,24 @@ var convert = exports.convert = function(values, from, to, cb) {
 		return cb(new Error('Invalid parameter lengths.'), null);
 	}
 
+	// Check that array contains valid data
+	if (Array.isArray(values)) {
+		for (var i = 0; i < values.length; i++) {
+			if (typeof values[i] !== 'number') {
+				return cb(new TypeError('Value array contains invalid data types'), null)
+			}
+		}
+	}
+
 	// Get the currencies and convert them.
 	getCurrency(from + to, function(err, result) {
-		if (err) cb(err, null);
-		if (typeof values === 'number') return cb(null, (Number(result.Rate) * values).toFixed(2));
+		if (err) return cb(err, null);
+		if (typeof values === 'number') return cb(null, parseFloat((result.Rate * values).toFixed(2)));
 		
 		// If values is not a number it must be an array of number.
 		for (var i = 0; i < values.length; i++) {
-			var converted = values[i] * Number(result.Rate);
-			values[i] = converted.toFixed(2);
+			var converted = values[i] * result.Rate;
+			values[i] = parseFloat(converted.toFixed(2));
 		}
 
 		return cb(null, values);
@@ -129,7 +138,7 @@ var getCurrency = exports.getCurrency = function(symbols, cb) {
 
 	// Check parameter lengths.
 	if ((Array.isArray(symbols) && symbols.length < 1) || (typeof symbols === 'string' && symbols.length != 6)) {
-		return cb(new Error('Invalid parameter lengths.'), null);
+		return cb(new Error('Invalid parameter lengths'), null);
 	}
 
 	// If symbols is an array make sure it consists only of strings.
@@ -161,6 +170,16 @@ var getCurrency = exports.getCurrency = function(symbols, cb) {
 		res.setEncoding('utf-8');
  		res.on('data', function(stuff) {
  			var parsed = JSON.parse(stuff);
+ 			var vals = parsed.query.results.rate;
+ 			if (typeof vals == 'object' && vals.Name == 'N/A') {
+ 				return cb(new Error('The result is undifined. Make sure that you are using correct currency symbols'), null);
+ 			} else if (Array.isArray(vals)) {
+ 				for (var i = 0; i < vals.length; i++) {
+ 					if (vals[i].Name == 'N/A') {
+ 						cb(new Error('The result is undifined. Make sure that you are using correct currency symbols'), null);
+ 					}
+ 				}
+ 			}
  			return cb(null, parsed.query.results.rate);
 		});
 	}).on('error', function(err){
