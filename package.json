@@ -1,6 +1,6 @@
 {
   "name": "y-currency",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A module that enables fast and easy currency/ies conversion using the Yahoo Finance API.",
   "author": "Matas Kairaitis <matas.kairaitis@gmail.com> (https://github.com/matys18/)",
   "main": "index.js",
