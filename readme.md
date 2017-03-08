@@ -1,5 +1,5 @@
 ## Installation
-
+ 
     npm install y-currency
 
 <a name="module_y-currency"></a>
